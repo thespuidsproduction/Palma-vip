@@ -1,7 +1,6 @@
-import { VipShell } from '@/components/vip/VipShell';
-import { SignOutButton } from '@/components/vip/SignOut';
-import { GlassEmpty } from '@/components/vip/desk';
-import { JudgeOverviewView } from '@/components/vip/JudgeOverviewView';
+import { PortalShell } from '@/components/palma/PortalShell';
+import { Empty } from '@/components/desk/surface';
+import { JudgeOverview } from '@/components/desk/JudgeOverview';
 import { buildMetadata } from '@/lib/seo';
 import { requirePermission } from '@/lib/auth/guards';
 import { getJudgeOverview } from '@/server/data/judging';
@@ -27,31 +26,30 @@ export default async function JudgingOverviewPage() {
 
   if (!overview) {
     return (
-      <VipShell title="PALMA Judging" userName={session.user.name} actions={<SignOutButton />}>
-        <GlassEmpty
+      <PortalShell title="PALMA Judging" session={session} desk="judge">
+        <Empty
           icon={Gavel}
           title="No panel membership"
           description="This account is not currently seated on a PALMA panel."
         />
-      </VipShell>
+      </PortalShell>
     );
   }
 
   const firstName = overview.judgeName.split(' ')[0] ?? overview.judgeName;
 
   return (
-    <VipShell
+    <PortalShell
       title="PALMA Judging"
-      eyebrow={overview.season.title}
-      userName={overview.judgeName}
-      nav={[{ title: 'The room', items: JUDGING_NAV }]}
+      subtitle={overview.season.title}
+      nav={JUDGING_NAV}
       activeHref="/judge"
-      actions={<SignOutButton />}
+      session={session}
+      desk="judge"
     >
-      <JudgeOverviewView
+      <JudgeOverview
         greeting={greeting()}
         firstName={firstName}
-        judgeName={overview.judgeName}
         counts={overview.counts}
         season={{
           title: overview.season.title,
@@ -69,6 +67,6 @@ export default async function JudgingOverviewPage() {
         isChair={overview.isChair}
         minJudges={MIN_JUDGES_PER_CANDIDACY}
       />
-    </VipShell>
+    </PortalShell>
   );
 }

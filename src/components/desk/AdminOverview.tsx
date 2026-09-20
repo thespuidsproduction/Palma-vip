@@ -1,18 +1,19 @@
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
-import { Monitor, AlertTriangle, ChevronRight, GitBranch, Activity } from 'lucide-react';
-import { Glass } from './glass';
-import { SectionHead, Label, Chip, Pulse } from './surface';
-import { DeskHero, StatTile, GlassNotice } from './desk';
+import { Monitor, AlertTriangle, ChevronRight, GitBranch, CalendarRange } from 'lucide-react';
+import { Card, SectionHead, Label, Tag, Dot, Notice } from './surface';
+import { Masthead, Stat } from './blocks';
+import { cn } from '@/lib/utils';
 
 /* ───────────────────────────────────────────────────────────────────────────
    The command centre
 
-   The institution in one screen. Four constellations of figures, each a grid
-   of glass tiles — a linked tile is a door, an unlinked one is a reading.
+   The institution in one screen. Four constellations of figures, each on a
+   bento grid — the first figure of a group is the one the group is about, so
+   it takes two columns and the rest fall in beside it.
 
-   Deliberately not a chart wall: the administrator's question here is "is
-   anything wrong and where", which a number answers faster than a line.
+   Deliberately not a wall of charts: the administrator's question here is
+   "is anything wrong, and where", which a number answers faster than a line.
    ─────────────────────────────────────────────────────────────────────────── */
 
 export type AdminStat = {
@@ -20,13 +21,13 @@ export type AdminStat = {
   value: number | string;
   note?: string;
   href?: string;
-  tone?: 'default' | 'attention' | 'gold';
+  tone?: 'neutral' | 'attention' | 'accent';
   icon: LucideIcon;
 };
 
 export type AdminGroupBlock = { title: string; icon: LucideIcon; stats: AdminStat[] };
 
-export function AdminOverviewView({
+export function AdminOverview({
   greeting,
   firstName,
   periodLabel,
@@ -52,61 +53,51 @@ export function AdminOverviewView({
   advance?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-10">
-      <DeskHero
+    <div className="flex flex-col gap-7">
+      <Masthead
         eyebrow="Command centre"
         eyebrowIcon={Monitor}
-        greeting={`${greeting}, ${firstName}.`}
+        title={`${greeting}, ${firstName}.`}
         statement={
           <>
             {outstanding === 0
               ? 'Nothing is waiting on a person across the institution.'
               : `${outstanding} item${outstanding === 1 ? '' : 's'} across the queues need a decision.`}{' '}
-            Figures below cover{' '}
-            <strong className="text-[color:var(--glass-ink)]">{periodLabel.toLowerCase()}</strong>
+            Figures below cover {periodLabel.toLowerCase()}
             {since ? `, counted since ${since}` : ''}.
           </>
         }
-        figure={{
-          value: outstanding,
-          caption: 'open decisions',
-          tone: outstanding > 0 ? 'gold' : 'default',
-        }}
+        figure={{ value: outstanding, caption: 'open decisions' }}
       >
         {seasonLine ? (
-          <Chip tone="gold">
-            <Pulse tone="gold" />
+          <Tag tone="accent">
+            <CalendarRange className="size-3.5" />
             {seasonLine}
-          </Chip>
+          </Tag>
         ) : null}
         {degraded.length === 0 ? (
-          <Chip tone="live">
-            <Pulse />
+          <Tag tone="positive">
+            <Dot />
             All services operational
-          </Chip>
+          </Tag>
         ) : null}
-      </DeskHero>
-
-      {filter ? (
-        <div className="flex flex-wrap items-center gap-4">
-          <Label icon={Activity}>Period</Label>
-          {filter}
-        </div>
-      ) : null}
+      </Masthead>
 
       {degraded.length > 0 ? (
-        <GlassNotice icon={AlertTriangle} tone="alert">
-          <p className="vip-label text-oxblood mb-1">A service is not healthy</p>
+        <Notice icon={AlertTriangle} tone="alert">
+          <strong className="text-[color:var(--text)]">A service is not healthy.</strong>{' '}
           {degraded.join(', ')}{' '}
           <Link
             href="/admin/health"
-            className="text-champagne inline-flex items-center gap-0.5 font-medium underline-offset-4 hover:underline"
+            className="inline-flex items-center gap-0.5 font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
           >
             view system health
             <ChevronRight className="size-3.5" />
           </Link>
-        </GlassNotice>
+        </Notice>
       ) : null}
+
+      {filter ? <div className="flex flex-wrap items-center gap-3">{filter}</div> : null}
 
       {groups.map((group) => (
         <section key={group.title}>
@@ -115,9 +106,11 @@ export function AdminOverviewView({
             title={group.title}
             action={<Label>{group.stats.length} figures</Label>}
           />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+          {/* Bento: the lead figure of each group is the one the group is
+              about, so it takes double width and anchors the row. */}
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
             {group.stats.map((stat, i) => (
-              <StatTile
+              <Stat
                 key={stat.label}
                 icon={stat.icon}
                 label={stat.label}
@@ -126,6 +119,7 @@ export function AdminOverviewView({
                 href={stat.href}
                 tone={stat.tone}
                 index={i}
+                className={cn(i === 0 && 'col-span-2')}
               />
             ))}
           </div>
@@ -135,9 +129,9 @@ export function AdminOverviewView({
       {advance ? (
         <section>
           <SectionHead icon={GitBranch} title="Advance the season" />
-          <Glass spotlight ceremonial className="max-w-2xl p-6 sm:p-8">
+          <Card elevation="raised" className="max-w-2xl p-5 sm:p-6">
             {advance}
-          </Glass>
+          </Card>
         </section>
       ) : null}
     </div>

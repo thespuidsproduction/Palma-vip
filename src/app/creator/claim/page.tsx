@@ -58,7 +58,7 @@ export default async function ClaimPage({
   const openClaim = openClaimRows[0] ?? null;
 
   return (
-    <PortalShell title="PALMA Portal" subtitle="Claim a profile" userName={session.user.email}>
+    <PortalShell title="PALMA Portal" subtitle="Claim a profile" session={session} desk="creator">
       <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
         <div className="max-w-160 lg:col-span-7">
           <p className="text-taupe-deep mb-8 leading-relaxed">

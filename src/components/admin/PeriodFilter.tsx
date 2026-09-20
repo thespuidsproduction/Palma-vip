@@ -10,28 +10,19 @@ export function PeriodFilter({
 }: {
   period: Period;
   basePath: string;
-  /** `glass` for the desks, which carry their own surface. */
-  variant?: 'rule' | 'glass';
+  /** `seg` for the desks, which carry their own surface. */
+  variant?: 'rule' | 'seg';
 }) {
-  if (variant === 'glass') {
+  if (variant === 'seg') {
     return (
-      <nav
-        aria-label="Period"
-        className="vip-glass-quiet inline-flex flex-wrap gap-1 rounded-full p-1"
-      >
+      <nav aria-label="Period" className="seg flex-wrap">
         {PERIODS.map((entry) => (
           <Link
             key={entry}
             href={entry === '30d' ? basePath : `${basePath}?period=${entry}`}
             aria-current={entry === period ? 'true' : undefined}
             data-active={entry === period || undefined}
-            className={cn(
-              'vip-nav-item rounded-full px-4 py-1.5 text-xs font-medium tracking-wide whitespace-nowrap',
-              'focus-visible:outline-champagne focus-visible:outline-2 focus-visible:outline-offset-2',
-              entry === period
-                ? 'text-[color:var(--glass-ink)]'
-                : 'text-[color:var(--glass-ink-quiet)] hover:text-[color:var(--glass-ink)]',
-            )}
+            className="seg-item focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
             {PERIOD_LABEL[entry]}
           </Link>

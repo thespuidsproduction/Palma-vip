@@ -41,7 +41,7 @@ export default async function CreatorSharePage() {
     <PortalShell
       title="PALMA Portal"
       subtitle="Your links"
-      userName={session.user.email}
+      session={session} desk="creator"
       nav={CREATOR_NAV}
       activeHref="/creator/share"
     >

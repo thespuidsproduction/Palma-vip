@@ -5,7 +5,7 @@ import { getQueueCounts } from '@/server/data/operations';
 import { recentActivity } from '@/server/data/people';
 import { greeting } from '@/lib/judging-nav';
 import { formatShortDate } from '@/lib/format';
-import { PortalOverviewView } from '@/components/vip/PortalOverviewView';
+import { PortalOverview } from '@/components/desk/PortalOverview';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,7 +61,7 @@ export default async function ModerationOverviewPage() {
   ].filter((item) => item.visible);
 
   return (
-    <PortalOverviewView
+    <PortalOverview
       greeting={greeting()}
       firstName={firstName}
       work={work.map(({ href, label, count, note }) => ({ href, label, count, note }))}

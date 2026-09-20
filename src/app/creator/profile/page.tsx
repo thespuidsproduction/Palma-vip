@@ -32,7 +32,7 @@ export default async function CreatorProfilePage() {
     <PortalShell
       title="PALMA Portal"
       subtitle="Your profile"
-      userName={session.user.email}
+      session={session} desk="creator"
       nav={CREATOR_NAV}
       activeHref="/creator/profile"
     >

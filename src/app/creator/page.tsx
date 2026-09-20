@@ -1,13 +1,11 @@
-import { VipShell } from '@/components/vip/VipShell';
-import { SignOutButton } from '@/components/vip/SignOut';
-import { CreatorOverviewView } from '@/components/vip/CreatorOverviewView';
-import { GlassEmpty } from '@/components/vip/desk';
+import { PortalShell } from '@/components/palma/PortalShell';
+import { CreatorOverview } from '@/components/desk/CreatorOverview';
+import { Empty } from '@/components/desk/surface';
 import { CopyLink } from '@/components/palma/CopyLink';
 import { buildMetadata, absoluteUrl } from '@/lib/seo';
 import { requireSession } from '@/lib/auth/guards';
 import { getCreatorPortal } from '@/server/data/portal';
 import { titleCase } from '@/lib/utils';
-import { isStaff } from '@/lib/auth/rbac';
 import { CREATOR_NAV } from '@/lib/creator-nav';
 import { UserX } from 'lucide-react';
 
@@ -26,28 +24,28 @@ export default async function PortalPage() {
 
   if (!portal) {
     return (
-      <VipShell title="PALMA Portal" userName={session.user.name} actions={<SignOutButton />}>
-        <GlassEmpty
+      <PortalShell title="PALMA Portal" session={session}>
+        <Empty
           icon={UserX}
           title="Account not found"
           description="This account could not be loaded. Sign out and in again, or contact PALMA."
         />
-      </VipShell>
+      </PortalShell>
     );
   }
 
   const verified = portal.verification.status === 'verified';
 
   return (
-    <VipShell
+    <PortalShell
       title="PALMA Portal"
-      eyebrow="Your record, your standing"
-      userName={session.user.email}
-      nav={[{ title: 'Your portal', items: CREATOR_NAV }]}
+      subtitle="Your record, your standing"
+      nav={CREATOR_NAV}
       activeHref="/creator"
-      actions={<SignOutButton />}
+      session={session}
+      verified={verified}
     >
-      <CreatorOverviewView
+      <CreatorOverview
         displayName={portal.displayName ?? session.user.name}
         honours={portal.achievements.map((achievement) => ({
           code: achievement.code,
@@ -69,14 +67,10 @@ export default async function PortalPage() {
         verified={verified}
         published={portal.isPublished}
         hasProfile={portal.hasProfile}
-        hasProfileRecord={Boolean(portal.profile)}
-        dossier={portal.dossier}
-        isJudge={Boolean(session.user.judgeId)}
-        isStaff={isStaff(session.user.role)}
-        copySlot={(code) => (
+        copySlot={(code: string) => (
           <CopyLink value={absoluteUrl(`/verify/${code}`)} label="Copy verification link" />
         )}
       />
-    </VipShell>
+    </PortalShell>
   );
 }

@@ -3,7 +3,7 @@ import { Notice } from '@/components/ui/feedback';
 import { StatGridSkeleton } from '@/components/admin/Skeletons';
 import { PeriodFilter } from '@/components/admin/PeriodFilter';
 import { AdvanceSeasonForm } from '@/components/admin/AdminForms';
-import { AdminOverviewView, type AdminGroupBlock } from '@/components/vip/AdminOverviewView';
+import { AdminOverview, type AdminGroupBlock } from '@/components/desk/AdminOverview';
 import { buildMetadata } from '@/lib/seo';
 import { requirePermission } from '@/lib/auth/guards';
 import { can, type Role } from '@/lib/auth/rbac';
@@ -164,7 +164,7 @@ async function Figures({
           label: 'Winners',
           value: awards.winners,
           href: '/admin/selection',
-          tone: 'gold',
+          tone: 'accent',
         },
         {
           icon: Stamp,
@@ -262,7 +262,7 @@ async function Figures({
 
   return (
     <>
-      <AdminOverviewView
+      <AdminOverview
         greeting={greeting()}
         firstName={firstName}
         periodLabel={PERIOD_LABEL[period]}
@@ -270,7 +270,7 @@ async function Figures({
         since={centre.since ? formatDate(centre.since) : null}
         degraded={degraded}
         groups={groups}
-        filter={<PeriodFilter period={period} basePath="/admin" variant="glass" />}
+        filter={<PeriodFilter period={period} basePath="/admin" variant="seg" />}
         seasonLine={
           awards ? `${awards.seasonTitle} — ${STAGE_LABEL[awards.stage as SeasonStage]}` : null
         }

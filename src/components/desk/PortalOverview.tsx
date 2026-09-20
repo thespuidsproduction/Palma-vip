@@ -13,16 +13,15 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Glass } from './glass';
-import { SectionHead, Label } from './surface';
-import { DeskHero, QueueRow, SidePanel, Stream, GlassNotice } from './desk';
+import { Card, SectionHead, Label, Notice } from './surface';
+import { Masthead, QueueRow, Panel, Stream, Dial } from './blocks';
 
 /* ───────────────────────────────────────────────────────────────────────────
    The moderation desk
 
-   One question: is anything waiting on a person? The hero answers it with a
-   number, the queues say what and where, and the chronology on the left shows
-   what the desk has already settled.
+   One question: is anything waiting on a person? The masthead answers it
+   with a number and a dial, the queues say what and where, and the
+   chronology shows what the desk has already settled.
    ─────────────────────────────────────────────────────────────────────────── */
 
 const QUEUE_ICONS: Record<string, LucideIcon> = {
@@ -34,9 +33,9 @@ const QUEUE_ICONS: Record<string, LucideIcon> = {
 };
 
 export type PortalWorkItem = { href: string; label: string; count: number; note: string };
-export type PortalStreamEntry = { id: string; when: string; title: string; detail: string };
+export type StreamEntry = { id: string; when: string; title: string; detail: string };
 
-export function PortalOverviewView({
+export function PortalOverview({
   greeting,
   firstName,
   work,
@@ -45,41 +44,52 @@ export function PortalOverviewView({
   greeting: string;
   firstName: string;
   work: PortalWorkItem[];
-  activity: PortalStreamEntry[];
+  activity: StreamEntry[];
 }) {
   const outstanding = work.reduce((sum, item) => sum + item.count, 0);
-  // Queues that need someone lead; cleared ones fall to the bottom rather than
-  // being hidden, so the desk can still see that they are clear.
+  const clear = work.filter((item) => item.count === 0).length;
+  // Queues that need someone lead; cleared ones fall to the bottom rather
+  // than being hidden, so the desk can still see that they are clear.
   const ordered = [...work].sort((a, b) => b.count - a.count);
 
   return (
-    <div className="flex flex-col gap-10">
-      <DeskHero
+    <div className="flex flex-col gap-7">
+      <Masthead
         eyebrow="Moderation"
         eyebrowIcon={LayoutDashboard}
-        greeting={`${greeting}, ${firstName}.`}
+        title={`${greeting}, ${firstName}.`}
         statement={
           outstanding === 0
             ? 'Your queues are clear. Nothing is waiting on a person.'
             : `${outstanding} item${outstanding === 1 ? '' : 's'} need a decision. Everything else is settled.`
         }
-        figure={{
-          value: outstanding,
-          caption: outstanding === 1 ? 'awaiting you' : 'awaiting you',
-          tone: outstanding > 0 ? 'gold' : 'default',
-        }}
-      />
+        figure={{ value: outstanding, caption: 'awaiting you' }}
+        aside={
+          work.length > 0 ? (
+            <Dial
+              value={clear}
+              total={work.length}
+              caption="queues clear"
+              tone={clear === work.length ? 'positive' : 'accent'}
+            />
+          ) : undefined
+        }
+      >
+        {outstanding === 0 ? (
+          <span className="text-[0.8125rem] text-[color:var(--text-quiet)]">
+            PALMA will write to you when something new arrives.
+          </span>
+        ) : null}
+      </Masthead>
 
       {outstanding > 0 ? (
-        <GlassNotice icon={Clock}>
-          <strong className="text-[color:var(--glass-ink)]">{outstanding}</strong> outstanding{' '}
-          {outstanding === 1 ? 'item requires' : 'items require'} your attention across the queues
-          below. Each decision is recorded against the thing it concerns, with your name on it.
-        </GlassNotice>
+        <Notice icon={Clock}>
+          Each decision is recorded against the thing it concerns, with your name on it.
+        </Notice>
       ) : (
-        <GlassNotice icon={CheckCircle2} tone="live">
-          Every queue on this desk is clear. PALMA will write to you when something new arrives.
-        </GlassNotice>
+        <Notice icon={CheckCircle2} tone="positive">
+          Every queue on this desk is clear.
+        </Notice>
       )}
 
       <section>
@@ -88,7 +98,7 @@ export function PortalOverviewView({
           title="Needs attention"
           action={<Label>{work.length} queues</Label>}
         />
-        <div className="grid gap-3">
+        <div className="grid gap-2.5">
           {ordered.map((item, i) => (
             <QueueRow
               key={item.href}
@@ -103,31 +113,32 @@ export function PortalOverviewView({
         </div>
       </section>
 
-      <div className="grid gap-8 xl:grid-cols-12">
+      {/* A bento pair: the chronology takes the room it needs, the standing
+          notes take what is left. */}
+      <div className="grid gap-6 xl:grid-cols-12">
         <section className="min-w-0 xl:col-span-7">
           <SectionHead icon={History} title="Recently recorded" />
-          <Glass spotlight className="p-5 sm:p-6">
+          <Card reveal className="p-4 sm:p-5">
             {activity.length === 0 ? (
-              <p className="py-6 text-center text-sm text-[color:var(--glass-ink-quiet)]">
+              <p className="py-5 text-center text-sm text-[color:var(--text-quiet)]">
                 Nothing has been recorded yet.
               </p>
             ) : (
               <Stream entries={activity} />
             )}
-          </Glass>
+          </Card>
         </section>
 
-        <aside className="flex min-w-0 flex-col gap-5 xl:col-span-5">
-          <SidePanel icon={Info} title="What this desk decides">
+        <aside className="flex min-w-0 flex-col gap-4 xl:col-span-5">
+          <Panel icon={Info} title="What this desk decides" reveal>
             Whether a person should control a PALMA record, whether a creator has been verified as
-            an adult, and whether something reported breaches the content policy. Each decision is
-            recorded against the thing it concerns, with your name on it.
-          </SidePanel>
+            an adult, and whether something reported breaches the content policy.
+          </Panel>
 
-          <SidePanel icon={ShieldOff} title="What it never decides" tone="alert" parallax>
+          <Panel icon={ShieldOff} title="What it never decides" tone="alert" reveal>
             An outcome. Selection, revocation and score correction are administrator actions.
             Moderation maintains the accuracy of the record and never its results.
-          </SidePanel>
+          </Panel>
         </aside>
       </div>
     </div>

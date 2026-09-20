@@ -1,5 +1,5 @@
 import { LayoutDashboard, User, ShieldCheck, LinkIcon } from 'lucide-react';
-import type { VipNavItem } from '@/components/vip/VipShell';
+import type { DeskNavItem } from '@/components/desk/DeskShell';
 
 /**
  * The creator portal, as pages rather than as one scroll.
@@ -13,7 +13,7 @@ import type { VipNavItem } from '@/components/vip/VipShell';
  * Four surfaces, one question each. The overview answers "where do I stand",
  * and the other three are the three jobs a creator actually comes here to do.
  */
-export const CREATOR_NAV: VipNavItem[] = [
+export const CREATOR_NAV: DeskNavItem[] = [
   { href: '/creator', label: 'Overview', icon: LayoutDashboard },
   { href: '/creator/profile', label: 'Profile', icon: User },
   { href: '/creator/verification', label: 'Verification', icon: ShieldCheck },

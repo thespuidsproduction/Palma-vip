@@ -1,8 +1,8 @@
 import { LayoutDashboard, Gavel, History, UserCog } from 'lucide-react';
-import type { VipNavItem } from '@/components/vip/VipShell';
+import type { DeskNavItem } from '@/components/desk/DeskShell';
 
 /** Four places, because a judge has four things to do. */
-export const JUDGING_NAV: VipNavItem[] = [
+export const JUDGING_NAV: DeskNavItem[] = [
   { href: '/judge', label: 'Overview', icon: LayoutDashboard },
   { href: '/judge/assignments', label: 'My judging', icon: Gavel },
   { href: '/judge/history', label: 'History', icon: History },

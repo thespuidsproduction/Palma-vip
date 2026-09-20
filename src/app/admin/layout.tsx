@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
-import { VipShell } from '@/components/vip/VipShell';
-import { SignOutButton } from '@/components/vip/SignOut';
+import { DeskShell } from '@/components/desk/DeskShell';
 import { CommandPalette } from '@/components/admin/CommandPalette';
+import { accountLinks } from '@/lib/account-menu';
 import { navFor } from '@/lib/admin-nav';
 import { roleSurface } from '@/components/account/RoleSurface';
 import { ENTRANCES } from '@/lib/auth/entrances';
@@ -16,20 +16,35 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const groups = navFor(session.user.role);
 
   return (
-    <VipShell
-      title="Administration"
+    <DeskShell
+      desk="Administration"
       eyebrow="The Creator Honours"
-      userName={session.user.email}
+      layout="rail"
       nav={groups}
       activeHref={activeHref}
-      actions={
-        <>
-          <CommandPalette groups={groups} />
-          <SignOutButton />
-        </>
+      account={{
+        name: session.user.name,
+        email: session.user.email,
+        role: session.user.role,
+        links: accountLinks({
+          role: session.user.role,
+          judgeId: session.user.judgeId,
+          creatorId: session.user.creatorId,
+          desk: 'admin',
+        }),
+      }}
+      search={
+        <CommandPalette
+          // Icons are components, and components do not cross into a client
+          // component. The palette is given the words and the destinations.
+          groups={groups.map((group) => ({
+            title: group.title,
+            items: group.items.map((item) => ({ href: item.href, label: item.label })),
+          }))}
+        />
       }
     >
       {children}
-    </VipShell>
+    </DeskShell>
   );
 }
