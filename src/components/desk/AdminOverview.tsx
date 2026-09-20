@@ -8,12 +8,13 @@ import { cn } from '@/lib/utils';
 /* ───────────────────────────────────────────────────────────────────────────
    The command centre
 
-   The institution in one screen. Four constellations of figures, each on a
-   bento grid — the first figure of a group is the one the group is about, so
-   it takes two columns and the rest fall in beside it.
+   The institution in one screen. Four constellations of figures on a bento
+   grid: the first figure of a group is the one the group is about, so it
+   takes two columns and the rest fall in beside it.
 
-   Deliberately not a wall of charts: the administrator's question here is
-   "is anything wrong, and where", which a number answers faster than a line.
+   Deliberately not a wall of charts. The administrator's question here is
+   whether anything is wrong and where, which a number answers faster than a
+   line.
    ─────────────────────────────────────────────────────────────────────────── */
 
 export type AdminStat = {
@@ -53,7 +54,7 @@ export function AdminOverview({
   advance?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-6">
       <Masthead
         eyebrow="Command centre"
         eyebrowIcon={Monitor}
@@ -84,31 +85,35 @@ export function AdminOverview({
       </Masthead>
 
       {degraded.length > 0 ? (
-        <Notice icon={AlertTriangle} tone="alert">
-          <strong className="text-[color:var(--text)]">A service is not healthy.</strong>{' '}
-          {degraded.join(', ')}{' '}
-          <Link
-            href="/admin/health"
-            className="inline-flex items-center gap-0.5 font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
-          >
-            view system health
-            <ChevronRight className="size-3.5" />
-          </Link>
-        </Notice>
+        <div data-lift="section">
+          <Notice icon={AlertTriangle} tone="alert">
+            <strong className="text-[color:var(--text)]">A service is not healthy.</strong>{' '}
+            {degraded.join(', ')}{' '}
+            <Link
+              href="/admin/health"
+              className="inline-flex items-center gap-0.5 font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
+            >
+              view system health
+              <ChevronRight className="size-3.5" />
+            </Link>
+          </Notice>
+        </div>
       ) : null}
 
-      {filter ? <div className="flex flex-wrap items-center gap-3">{filter}</div> : null}
+      {filter ? (
+        <div className="flex flex-wrap items-center gap-3" data-lift="hero">
+          {filter}
+        </div>
+      ) : null}
 
       {groups.map((group) => (
-        <section key={group.title}>
+        <section key={group.title} data-lift="section">
           <SectionHead
             icon={group.icon}
             title={group.title}
             action={<Label>{group.stats.length} figures</Label>}
           />
-          {/* Bento: the lead figure of each group is the one the group is
-              about, so it takes double width and anchors the row. */}
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
             {group.stats.map((stat, i) => (
               <Stat
                 key={stat.label}
@@ -118,7 +123,6 @@ export function AdminOverview({
                 note={stat.note}
                 href={stat.href}
                 tone={stat.tone}
-                index={i}
                 className={cn(i === 0 && 'col-span-2')}
               />
             ))}
@@ -127,9 +131,9 @@ export function AdminOverview({
       ))}
 
       {advance ? (
-        <section>
+        <section data-lift="section">
           <SectionHead icon={GitBranch} title="Advance the season" />
-          <Card elevation="raised" className="max-w-2xl p-5 sm:p-6">
+          <Card elevation="raised" className="glow max-w-2xl p-5">
             {advance}
           </Card>
         </section>

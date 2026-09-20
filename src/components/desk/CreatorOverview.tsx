@@ -15,6 +15,9 @@ import {
 import {
   Card,
   CardLink,
+  List,
+  Row,
+  RowText,
   SectionHead,
   Label,
   Tag,
@@ -25,7 +28,6 @@ import {
   Notice,
 } from './surface';
 import { Masthead, Panel } from './blocks';
-import { cn } from '@/lib/utils';
 
 /* ───────────────────────────────────────────────────────────────────────────
    The creator portal
@@ -33,7 +35,7 @@ import { cn } from '@/lib/utils';
    Where a creator stands, in the order they care about it: what they hold,
    what they are in contention for, and then the machinery.
 
-   The account's own details are not on this page — they are in the account
+   The account's own details are not on this page. They are in the account
    menu in the chrome, which is where a person looks for them and where they
    stop taking up the page.
    ─────────────────────────────────────────────────────────────────────────── */
@@ -79,7 +81,7 @@ export function CreatorOverview({
   const live = honours.filter((honour) => !honour.revoked).length;
 
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-6">
       <Masthead
         eyebrow="Creator portal"
         eyebrowIcon={Sparkles}
@@ -87,7 +89,7 @@ export function CreatorOverview({
         statement={
           live > 0
             ? `You hold ${live} PALMA honour${live === 1 ? '' : 's'}. Each carries a permanent verification link that proves it, for as long as PALMA keeps the record.`
-            : 'Your record, your candidacies and where you stand — kept in one place.'
+            : 'Your record, your candidacies and where you stand, kept in one place.'
         }
         figure={
           live > 0
@@ -114,15 +116,15 @@ export function CreatorOverview({
 
       {/* ── No record yet ───────────────────────────────────────────────── */}
       {!hasProfile ? (
-        <Card elevation="raised" className="overflow-hidden">
-          <div className="p-6">
+        <Card elevation="raised" className="glow overflow-hidden" data-lift="section">
+          <div className="p-5">
             <Label icon={User} className="text-[color:var(--accent)]">
               No record yet
             </Label>
-            <h2 className="font-display mt-3 text-2xl leading-tight text-balance text-[color:var(--text)]">
+            <h2 className="font-display mt-2.5 text-xl leading-tight text-balance text-[color:var(--text)]">
               PALMA has not written a record for you, or you have not claimed it.
             </h2>
-            <p className="mt-3 max-w-[62ch] leading-relaxed text-[color:var(--text-soft)]">
+            <p className="mt-2.5 max-w-[62ch] text-[0.875rem] leading-relaxed text-[color:var(--text-soft)]">
               A record is usually written the first time a creator is nominated, so one may already
               exist. If it does not, you can start one: either write it yourself, or give PALMA the
               links and let the editorial desk write it from the work.
@@ -130,7 +132,7 @@ export function CreatorOverview({
           </div>
           <div className="h-px bg-[color:var(--line)]" />
           <div className="grid sm:grid-cols-2">
-            <div className="flex flex-col gap-3 p-5">
+            <div className="flex flex-col gap-2.5 p-4">
               <Label icon={Search} className="text-[color:var(--accent)]">
                 If it already exists
               </Label>
@@ -142,7 +144,7 @@ export function CreatorOverview({
                 Claim a record
               </Action>
             </div>
-            <div className="flex flex-col gap-3 border-[color:var(--line)] p-5 sm:border-l">
+            <div className="flex flex-col gap-2.5 border-[color:var(--line)] p-4 sm:border-l">
               <Label icon={PenLine} className="text-[color:var(--accent)]">
                 If it does not
               </Label>
@@ -164,17 +166,19 @@ export function CreatorOverview({
       ) : null}
 
       {hasProfile && !published ? (
-        <Notice icon={Globe}>
-          <strong className="text-[color:var(--text)]">Your record is with PALMA.</strong> It is
-          held by your account and waiting on a moderator. Nothing is public until they publish it,
-          and you can keep editing it in the meantime.
-        </Notice>
+        <div data-lift="section">
+          <Notice icon={Globe}>
+            <strong className="text-[color:var(--text)]">Your record is with PALMA.</strong> It is
+            held by your account and waiting on a moderator. Nothing is public until they publish
+            it, and you can keep editing it in the meantime.
+          </Notice>
+        </div>
       ) : null}
 
-      <div className="grid gap-6 xl:grid-cols-12">
-        <div className="flex min-w-0 flex-col gap-7 xl:col-span-7">
+      <div className="grid gap-5 xl:grid-cols-12">
+        <div className="flex min-w-0 flex-col gap-6 xl:col-span-7">
           {/* ── Honours ─────────────────────────────────────────────────── */}
-          <section>
+          <section data-lift="section">
             <SectionHead icon={Award} title="Your PALMA record" />
             {honours.length === 0 ? (
               <Empty
@@ -183,55 +187,38 @@ export function CreatorOverview({
                 description="Honours appear here the moment they are conferred, each with its permanent verification link."
               />
             ) : (
-              <div className="grid gap-2.5">
-                {honours.map((honour, i) => (
-                  <Card
-                    key={honour.code}
-                    index={i}
-                    elevation={honour.revoked ? 'resting' : 'raised'}
-                    className={cn(
-                      'flex flex-wrap items-center justify-between gap-4 p-4',
-                      honour.revoked && 'opacity-70',
-                    )}
-                  >
-                    <span className="flex min-w-0 items-center gap-3.5">
-                      <Glyph icon={Trophy} tone={honour.revoked ? 'neutral' : 'accent'} />
-                      <span className="flex min-w-0 flex-col gap-0.5">
-                        <span className="font-display text-[0.9375rem] leading-snug text-[color:var(--text)]">
-                          {honour.categoryName}
-                        </span>
-                        <span className="label text-[10px]">
-                          {honour.kind} · {honour.year}
-                        </span>
-                      </span>
-                    </span>
-                    <span className="flex items-center gap-2.5">
+              <List className="glow" data-lift="list">
+                {honours.map((honour) => (
+                  <Row key={honour.code} className={honour.revoked ? 'opacity-60' : undefined}>
+                    <Glyph icon={Trophy} size="sm" tone={honour.revoked ? 'neutral' : 'accent'} />
+                    <RowText title={honour.categoryName} note={`${honour.kind} · ${honour.year}`} />
+                    <span className="ml-auto flex shrink-0 items-center gap-2">
                       {honour.revoked ? (
                         <Tag>Revoked</Tag>
                       ) : (
                         // The copy control is a shared component with its own
                         // square outline; rounded here so it sits in the row
                         // with the tags rather than against them.
-                        <span className="[&_button]:rounded-full [&_button]:border-[color:var(--line)]">
+                        <span className="[&_button]:rounded-full [&_button]:border-[color:var(--line)] [&_button]:px-2.5 [&_button]:py-1 [&_button]:text-[0.625rem]">
                           {copySlot?.(honour.code) ?? null}
                         </span>
                       )}
                       <Link
                         href={honour.verifyHref}
-                        className="inline-flex items-center gap-1.5 text-xs font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
+                        className="inline-flex items-center gap-1 text-[0.6875rem] font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
                       >
                         <Eye className="size-3.5" />
                         View
                       </Link>
                     </span>
-                  </Card>
+                  </Row>
                 ))}
-              </div>
+              </List>
             )}
           </section>
 
           {/* ── Candidacies ─────────────────────────────────────────────── */}
-          <section>
+          <section data-lift="section">
             <SectionHead icon={Trophy} title="Where you are in contention" />
             {candidacies.length === 0 ? (
               <Empty
@@ -240,31 +227,28 @@ export function CreatorOverview({
                 description="A candidacy is created the first time someone nominates you in a category. Share your nomination link to let your audience put you forward."
               />
             ) : (
-              <div className="grid gap-2.5">
-                {candidacies.map((candidacy, i) => (
-                  <Card
-                    key={candidacy.id}
-                    index={i}
-                    className="flex flex-wrap items-center justify-between gap-4 p-4"
-                  >
-                    <span className="flex min-w-0 flex-col gap-0.5">
-                      <span className="font-display text-[0.9375rem] leading-snug text-[color:var(--text)]">
-                        {candidacy.categoryName}
-                      </span>
-                      <span className="label text-[10px]">
-                        <span className="font-mono tracking-wider">{candidacy.reference}</span> ·{' '}
-                        {candidacy.year}
-                      </span>
-                    </span>
-                    <Tag tone={candidacy.winner ? 'accent' : 'neutral'}>
+              <List className="glow" data-lift="list">
+                {candidacies.map((candidacy) => (
+                  <Row key={candidacy.id}>
+                    <RowText
+                      title={candidacy.categoryName}
+                      note={
+                        <>
+                          <span className="font-mono tracking-wider">{candidacy.reference}</span>
+                          {' · '}
+                          {candidacy.year}
+                        </>
+                      }
+                    />
+                    <Tag tone={candidacy.winner ? 'accent' : 'neutral'} className="ml-auto">
                       {candidacy.winner ? <Trophy className="size-3.5" /> : null}
                       {candidacy.status}
                     </Tag>
-                  </Card>
+                  </Row>
                 ))}
-              </div>
+              </List>
             )}
-            <p className="mt-4 max-w-[68ch] text-[0.8125rem] leading-relaxed text-[color:var(--text-quiet)]">
+            <p className="mt-3 max-w-[68ch] text-[0.8125rem] leading-relaxed text-[color:var(--text-quiet)]">
               PALMA does not show you how many nominations you have received. Nomination numbers do
               not decide outcomes, and a running total would only invite you to campaign for one.
             </p>
@@ -272,18 +256,16 @@ export function CreatorOverview({
         </div>
 
         {/* ── The three jobs ──────────────────────────────────────────────
-            Everything account-shaped — the dossier, email preferences,
-            security, the other roles this person holds — moved into the
-            account menu. What is left here is the three things a creator
-            comes to this desk to do. */}
-        <aside className="flex min-w-0 flex-col gap-4 xl:col-span-5">
-          <CardLink href="/creator/profile" index={0}>
-            <div className="p-5">
-              <div className="mb-3 flex items-center gap-2.5">
+            Everything account-shaped, which is the dossier, email
+            preferences, security and the other roles this person holds, has
+            moved into the account menu. What is left here is the three
+            things a creator comes to this desk to do. */}
+        <aside className="flex min-w-0 flex-col gap-3.5 xl:col-span-5">
+          <CardLink href="/creator/profile" className="glow sheen" data-lift="section">
+            <div className="p-4">
+              <div className="mb-2.5 flex items-center gap-2.5">
                 <Glyph icon={User} size="sm" />
-                <h3 className="font-display text-[0.9375rem] text-[color:var(--text)]">
-                  Your profile
-                </h3>
+                <h3 className="font-display text-sm text-[color:var(--text)]">Your profile</h3>
                 <PenLine className="ml-auto size-4 text-[color:var(--accent)] opacity-0 transition-opacity duration-400 group-hover:opacity-100" />
               </div>
               <p className="text-[0.8125rem] leading-relaxed text-[color:var(--text-soft)]">
@@ -297,16 +279,15 @@ export function CreatorOverview({
             title="Verification"
             tone={verified ? 'positive' : 'accent'}
             badge={<Tag tone={verified ? 'positive' : 'accent'}>{verificationStatus}</Tag>}
-            index={1}
           >
-            <p className="mb-4">PALMA confers nothing on an unverified record.</p>
+            <p className="mb-3.5">PALMA confers nothing on an unverified record.</p>
             <Action href="/creator/verification" icon={ShieldCheck}>
               {verified ? 'View verification' : 'Complete verification'}
             </Action>
           </Panel>
 
-          <Panel icon={LinkIcon} title="Your links" index={2}>
-            <p className="mb-4">
+          <Panel icon={LinkIcon} title="Your links">
+            <p className="mb-3.5">
               The link you share to be nominated, and the permanent one that proves what you hold.
               They do opposite jobs.
             </p>

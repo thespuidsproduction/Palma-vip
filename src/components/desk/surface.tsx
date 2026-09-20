@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 /* ───────────────────────────────────────────────────────────────────────────
-   Desk surfaces — the static half of the kit
+   Desk surfaces: the static half of the kit
 
    No `'use client'` here, and it must not acquire one. A Lucide icon is a
    function component and cannot be serialised across the server/client
@@ -27,6 +27,7 @@ export function Card({
   elevation = 'resting',
   index,
   reveal,
+  ...rest
 }: {
   children: React.ReactNode;
   className?: string;
@@ -35,9 +36,10 @@ export function Card({
   index?: number;
   /** Reveal as it scrolls into view instead. */
   reveal?: boolean;
-}) {
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
+      {...rest}
       style={index === undefined ? undefined : ({ ['--i']: index } as React.CSSProperties)}
       className={cn(
         'card',
@@ -60,6 +62,7 @@ export function CardLink({
   elevation = 'resting',
   index,
   reveal,
+  ...rest
 }: {
   href: string;
   children: React.ReactNode;
@@ -67,9 +70,10 @@ export function CardLink({
   elevation?: Elevation;
   index?: number;
   reveal?: boolean;
-}) {
+} & Omit<React.ComponentPropsWithoutRef<'a'>, 'href'>) {
   return (
     <Link
+      {...rest}
       href={href}
       style={index === undefined ? undefined : ({ ['--i']: index } as React.CSSProperties)}
       className={cn(
@@ -386,5 +390,79 @@ export function Action({
       ) : null}
       {children}
     </Link>
+  );
+}
+
+/**
+ * A list.
+ *
+ * One card holding rows, with rules between them. Replaces the stack of
+ * separate cards each row used to be: twelve cards is twelve shadows, twelve
+ * borders and eleven gutters of wasted height for something the eye wants to
+ * run straight down.
+ */
+export function List({
+  children,
+  className,
+  index,
+  reveal,
+  ...rest
+}: {
+  children: React.ReactNode;
+  className?: string;
+  index?: number;
+  reveal?: boolean;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <Card {...rest} index={index} reveal={reveal} className={cn('list', className)}>
+      {children}
+    </Card>
+  );
+}
+
+/** A row inside a list. As a link when it goes somewhere, a div when it does not. */
+export function Row({
+  href,
+  children,
+  className,
+  index,
+}: {
+  href?: string;
+  children: React.ReactNode;
+  className?: string;
+  index?: number;
+}) {
+  const style = index === undefined ? undefined : ({ ['--i']: index } as React.CSSProperties);
+
+  if (!href) {
+    return (
+      <div className={cn('row', className)} style={style}>
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      style={style}
+      className={cn(
+        'row group',
+        'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[color:var(--accent)]',
+        className,
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
+
+/** The title and supporting line inside a row. */
+export function RowText({ title, note }: { title: React.ReactNode; note?: React.ReactNode }) {
+  return (
+    <span className="flex min-w-0 flex-col gap-0.5">
+      <span className="row-title truncate">{title}</span>
+      {note ? <span className="row-note">{note}</span> : null}
+    </span>
   );
 }

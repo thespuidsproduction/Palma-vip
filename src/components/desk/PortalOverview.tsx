@@ -13,15 +13,15 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Card, SectionHead, Label, Notice } from './surface';
+import { Card, List, SectionHead, Label, Notice } from './surface';
 import { Masthead, QueueRow, Panel, Stream, Dial } from './blocks';
 
 /* ───────────────────────────────────────────────────────────────────────────
    The moderation desk
 
-   One question: is anything waiting on a person? The masthead answers it
-   with a number and a dial, the queues say what and where, and the
-   chronology shows what the desk has already settled.
+   One question: is anything waiting on a person? The masthead answers it with
+   a dial, the queues say what and where, and the chronology shows what the
+   desk has already settled.
    ─────────────────────────────────────────────────────────────────────────── */
 
 const QUEUE_ICONS: Record<string, LucideIcon> = {
@@ -48,12 +48,12 @@ export function PortalOverview({
 }) {
   const outstanding = work.reduce((sum, item) => sum + item.count, 0);
   const clear = work.filter((item) => item.count === 0).length;
-  // Queues that need someone lead; cleared ones fall to the bottom rather
-  // than being hidden, so the desk can still see that they are clear.
+  // Queues that need someone lead; cleared ones fall to the bottom rather than
+  // being hidden, so the desk can still see that they are clear.
   const ordered = [...work].sort((a, b) => b.count - a.count);
 
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-6">
       <Masthead
         eyebrow="Moderation"
         eyebrowIcon={LayoutDashboard}
@@ -82,24 +82,26 @@ export function PortalOverview({
         ) : null}
       </Masthead>
 
-      {outstanding > 0 ? (
-        <Notice icon={Clock}>
-          Each decision is recorded against the thing it concerns, with your name on it.
-        </Notice>
-      ) : (
-        <Notice icon={CheckCircle2} tone="positive">
-          Every queue on this desk is clear.
-        </Notice>
-      )}
+      <div data-lift="section">
+        {outstanding > 0 ? (
+          <Notice icon={Clock}>
+            Each decision is recorded against the thing it concerns, with your name on it.
+          </Notice>
+        ) : (
+          <Notice icon={CheckCircle2} tone="positive">
+            Every queue on this desk is clear.
+          </Notice>
+        )}
+      </div>
 
-      <section>
+      <section data-lift="section">
         <SectionHead
           icon={Inbox}
           title="Needs attention"
           action={<Label>{work.length} queues</Label>}
         />
-        <div className="grid gap-2.5">
-          {ordered.map((item, i) => (
+        <List className="glow" data-lift="list">
+          {ordered.map((item) => (
             <QueueRow
               key={item.href}
               href={item.href}
@@ -107,18 +109,15 @@ export function PortalOverview({
               label={item.label}
               note={item.note}
               count={item.count}
-              index={i + 1}
             />
           ))}
-        </div>
+        </List>
       </section>
 
-      {/* A bento pair: the chronology takes the room it needs, the standing
-          notes take what is left. */}
-      <div className="grid gap-6 xl:grid-cols-12">
-        <section className="min-w-0 xl:col-span-7">
+      <div className="grid gap-5 xl:grid-cols-12">
+        <section className="min-w-0 xl:col-span-7" data-lift="section">
           <SectionHead icon={History} title="Recently recorded" />
-          <Card reveal className="p-4 sm:p-5">
+          <Card className="glow">
             {activity.length === 0 ? (
               <p className="py-5 text-center text-sm text-[color:var(--text-quiet)]">
                 Nothing has been recorded yet.
@@ -129,13 +128,13 @@ export function PortalOverview({
           </Card>
         </section>
 
-        <aside className="flex min-w-0 flex-col gap-4 xl:col-span-5">
-          <Panel icon={Info} title="What this desk decides" reveal>
+        <aside className="flex min-w-0 flex-col gap-3.5 xl:col-span-5">
+          <Panel icon={Info} title="What this desk decides">
             Whether a person should control a PALMA record, whether a creator has been verified as
             an adult, and whether something reported breaches the content policy.
           </Panel>
 
-          <Panel icon={ShieldOff} title="What it never decides" tone="alert" reveal>
+          <Panel icon={ShieldOff} title="What it never decides" tone="alert">
             An outcome. Selection, revocation and score correction are administrator actions.
             Moderation maintains the accuracy of the record and never its results.
           </Panel>

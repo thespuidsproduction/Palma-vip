@@ -565,6 +565,302 @@
     }
   }
 
+  /* ── Lists ─────────────────────────────────────────────────────────────────
+     A set of rows is ONE card with rules between the rows, not a stack of
+     cards with gaps between them. Twelve floating cards is twelve shadows,
+     twelve borders and eleven gutters of wasted height for a list the eye
+     wants to run straight down.
+
+     The row keeps its own hover, so it is still obviously a thing you can
+     click; it just does it inside the card rather than as a card. */
+  .list {
+    overflow: hidden;
+  }
+
+  .list > * + * {
+    border-top: 1px solid var(--line);
+  }
+
+  .row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 0.875rem;
+    transition:
+      background-color 0.25s var(--swift),
+      padding-left 0.35s var(--spring);
+  }
+
+  a.row:hover,
+  a.row:focus-visible {
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+    padding-left: 1.125rem;
+  }
+
+  /* The accent edge that arrives on hover, so a row reads as selectable
+     without needing a border of its own at rest. */
+  a.row::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.35s var(--spring);
+  }
+
+  a.row:hover::before,
+  a.row:focus-visible::before {
+    transform: scaleY(1);
+  }
+
+  .row-title {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    line-height: 1.3;
+    color: var(--text);
+  }
+
+  .row-note {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--text-quiet);
+  }
+
+  /* The count that leads a queue row. Small, tabular, and tinted only when
+     it is not zero. */
+  .row-count {
+    display: grid;
+    place-items: center;
+    min-width: 1.875rem;
+    height: 1.625rem;
+    padding: 0 0.375rem;
+    border-radius: 0.4375rem;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    background: color-mix(in srgb, var(--text) 5%, transparent);
+    color: var(--text-quiet);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition:
+      background-color 0.3s var(--settle),
+      color 0.3s var(--settle);
+  }
+
+  .row-count[data-waiting='true'] {
+    background: var(--accent-wash);
+    color: var(--accent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+
+  /* ── Kokonut-style flourishes ──────────────────────────────────────────────
+     Three borrowed ideas, rebuilt on PALMA's tokens rather than dropped in:
+     a beam that travels the border of the panel that matters, a sheen that
+     crosses a surface once on hover, and a pointer-tracked glow. Each is one
+     pseudo-element and no JavaScript. */
+
+  /* The beam. A conic gradient rotating behind the card, masked to a hairline
+     by the card's own inset background. It marks exactly one panel per page,
+     so it reads as ceremony rather than as decoration. */
+  .beam {
+    position: relative;
+  }
+
+  .beam::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    z-index: -1;
+    background: conic-gradient(
+      from var(--beam-angle, 0deg),
+      transparent 0%,
+      transparent 68%,
+      color-mix(in srgb, var(--accent-bright) 85%, transparent) 84%,
+      color-mix(in srgb, var(--accent-bright) 25%, transparent) 92%,
+      transparent 100%
+    );
+    animation: beam-spin 7s linear infinite;
+  }
+
+  /* A single pass of light across a surface on hover. */
+  .sheen {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sheen::after {
+    content: '';
+    position: absolute;
+    inset: -50% -120%;
+    pointer-events: none;
+    background: linear-gradient(
+      74deg,
+      transparent 44%,
+      color-mix(in srgb, var(--text) 8%, transparent) 50%,
+      transparent 56%
+    );
+    transform: translateX(-55%);
+    opacity: 0;
+  }
+
+  .sheen:hover::after,
+  .sheen:focus-within::after {
+    animation: sheen-pass 0.9s var(--settle);
+  }
+
+  /* A glow that follows the pointer across a card. `--mx`/`--my` are written
+     by the pointer handler; before one has moved, nothing paints. */
+  .glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      18rem 18rem at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent 68%
+    );
+    opacity: 0;
+    transition: opacity 0.45s var(--settle);
+  }
+
+  .glow:hover::after,
+  .glow:focus-within::after {
+    opacity: 1;
+  }
+
+  /* ── Drizzle ───────────────────────────────────────────────────────────────
+     A fine fall of specks across the desk, very slow and very faint. Two
+     layers at different speeds and opacities so it has depth rather than
+     reading as a texture sliding down the screen.
+
+     It is drawn from one repeating-gradient per layer, so the whole effect is
+     two elements and no per-particle DOM. */
+  .drizzle {
+    position: fixed;
+    inset: -20% 0 -20% 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.28;
+    background-image:
+      radial-gradient(1px 5px at 12% 0, var(--text) 0, transparent 100%),
+      radial-gradient(1px 4px at 34% 0, var(--text) 0, transparent 100%),
+      radial-gradient(1px 6px at 57% 0, var(--text) 0, transparent 100%),
+      radial-gradient(1px 4px at 78% 0, var(--text) 0, transparent 100%),
+      radial-gradient(1px 5px at 91% 0, var(--text) 0, transparent 100%);
+    background-size:
+      14rem 9rem,
+      18rem 11rem,
+      16rem 8rem,
+      21rem 12rem,
+      15rem 10rem;
+    animation: drizzle-fall 9s linear infinite;
+  }
+
+  .drizzle-near {
+    opacity: 0.22;
+    background-image:
+      radial-gradient(1.5px 8px at 22% 0, var(--accent) 0, transparent 100%),
+      radial-gradient(1.5px 7px at 66% 0, var(--accent) 0, transparent 100%),
+      radial-gradient(1.5px 9px at 88% 0, var(--accent) 0, transparent 100%);
+    background-size:
+      26rem 16rem,
+      30rem 19rem,
+      24rem 15rem;
+    animation-name: drizzle-fall-near;
+    animation-duration: 5.5s;
+  }
+
+  [data-theme='ink'] .drizzle {
+    opacity: 0.2;
+  }
+
+  [data-theme='ink'] .drizzle-near {
+    opacity: 0.28;
+  }
+
+  /* ── The mobile menu ───────────────────────────────────────────────────────
+     A panel that comes down from under the chrome, not a strip of tabs across
+     the top of the page. The trigger is a hamburger in the outer corner,
+     where a thumb on a phone actually reaches.
+
+     `grid-template-rows: 0fr → 1fr` is what lets it animate to its own
+     height without anybody measuring anything. */
+  .sheet {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition:
+      grid-template-rows 0.42s var(--settle),
+      opacity 0.3s var(--swift),
+      visibility 0.42s;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .sheet[data-open='true'] {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .sheet > * {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* Each row of the menu arrives on a stagger once the panel is open. */
+  .sheet[data-open='true'] .sheet-item {
+    animation: sheet-item 0.4s var(--settle) both;
+    animation-delay: calc(var(--i, 0) * 40ms + 90ms);
+  }
+
+  /* The hamburger. Three lines that fold into a cross, so the button says
+     what it will do next rather than swapping glyph.
+
+     The lines are positioned absolutely rather than laid out in a grid. A
+     grid stretches its rows to fill the button, so the gap between the
+     strokes depends on the button's height, and the two that rotate then
+     cross short of each other and read as a chevron instead of a cross.
+     Absolute placement puts the spacing in one place, in pixels, where it
+     can be reasoned about. */
+  .burger-line {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1rem;
+    height: 1px;
+    transform: translate(-50%, calc(-50% + var(--y, 0px)));
+    transform-origin: center;
+    transition:
+      transform 0.4s var(--spring),
+      opacity 0.2s var(--swift);
+  }
+
+  .burger-line:nth-child(1) {
+    --y: -5px;
+  }
+
+  .burger-line:nth-child(3) {
+    --y: 5px;
+  }
+
+  [data-open='true'] > .burger-line:nth-child(1) {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  [data-open='true'] > .burger-line:nth-child(2) {
+    opacity: 0;
+    transform: translate(-50%, -50%) scaleX(0.3);
+  }
+
+  [data-open='true'] > .burger-line:nth-child(3) {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
   /* ── Scroll-driven reveal ──────────────────────────────────────────────────
      Tied to the element's own position in the viewport, so it scrubs with the
      scroll rather than firing on a timer. The `@supports` guard is
@@ -613,6 +909,49 @@
 }
 
 /* ── Keyframes ───────────────────────────────────────────────────────────── */
+
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@keyframes sheen-pass {
+  0% {
+    opacity: 0;
+    transform: translateX(-55%);
+  }
+  24% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(55%);
+  }
+}
+
+@keyframes drizzle-fall {
+  to {
+    background-position-y: 9rem, 11rem, 8rem, 12rem, 10rem;
+  }
+}
+
+@keyframes drizzle-fall-near {
+  to {
+    background-position-y: 16rem, 19rem, 15rem;
+  }
+}
+
+@keyframes sheet-item {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 @keyframes chrome-settle {
   to {
@@ -713,6 +1052,12 @@
 
 /* `--pct` has to be registered for the ring's conic sweep to interpolate at
    all: an unregistered custom property jumps from one value to the next. */
+@property --beam-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
 @property --pct {
   syntax: '<number>';
   inherits: true;
@@ -728,7 +1073,10 @@
   .meter-fill,
   .ring,
   .dot::after,
-  .edge-glow {
+  .edge-glow,
+  .drizzle,
+  .beam::before,
+  .sheet-item {
     animation: none !important;
     opacity: 1;
   }

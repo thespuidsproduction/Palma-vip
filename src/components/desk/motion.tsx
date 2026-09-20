@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 /* ───────────────────────────────────────────────────────────────────────────
-   Desk motion — the half that needs a browser
+   Desk motion: the half that needs a browser
 
    Three things and no more: the ambient wash that follows the pointer, the
    magnetic pill, and the figure that counts up when first seen. Everything

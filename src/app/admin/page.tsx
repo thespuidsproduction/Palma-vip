@@ -147,7 +147,7 @@ async function Figures({
 
   if (awards) {
     groups.push({
-      title: `Awards — ${awards.seasonTitle}, ${STAGE_LABEL[awards.stage as SeasonStage]}`,
+      title: `Awards: ${awards.seasonTitle}, ${STAGE_LABEL[awards.stage as SeasonStage]}`,
       icon: Trophy,
       stats: [
         { icon: Layers, label: 'Categories', value: awards.categories },
@@ -272,7 +272,7 @@ async function Figures({
         groups={groups}
         filter={<PeriodFilter period={period} basePath="/admin" variant="seg" />}
         seasonLine={
-          awards ? `${awards.seasonTitle} — ${STAGE_LABEL[awards.stage as SeasonStage]}` : null
+          awards ? `${awards.seasonTitle}, ${STAGE_LABEL[awards.stage as SeasonStage]}` : null
         }
         advance={
           awards && can(role, 'admin:manage_seasons') ? (
