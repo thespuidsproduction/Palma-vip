@@ -71,7 +71,8 @@ export default async function PortalPage() {
           <CopyLink
             value={absoluteUrl(`/verify/${code}`)}
             label="Copy link"
-            className="rounded-full border-[color:var(--line)] px-2.5 py-1 text-[0.625rem] pointer-coarse:min-h-11 pointer-coarse:px-3"
+            compact
+            className="rounded-full border-[color:var(--line)] px-2.5 py-1 text-[0.625rem] max-sm:size-11 max-sm:px-0 sm:pointer-coarse:min-h-11 sm:pointer-coarse:px-3"
           />
         )}
       />

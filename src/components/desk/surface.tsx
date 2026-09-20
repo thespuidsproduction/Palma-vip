@@ -459,11 +459,28 @@ export function Row({
 }
 
 /** The title and supporting line inside a row. */
-export function RowText({ title, note }: { title: React.ReactNode; note?: React.ReactNode }) {
+export function RowText({
+  title,
+  note,
+  noteFromSm,
+}: {
+  title: React.ReactNode;
+  note?: React.ReactNode;
+  /**
+   * Hold the note back until there is room for it.
+   *
+   * On a phone a row that carries a title, a note, a control and a link
+   * truncates the one thing worth reading. Where the note is a detail rather
+   * than the point, it waits for the small breakpoint.
+   */
+  noteFromSm?: boolean;
+}) {
   return (
     <span className="flex min-w-0 flex-col gap-0.5">
-      <span className="row-title truncate">{title}</span>
-      {note ? <span className="row-note">{note}</span> : null}
+      <span className="row-title line-clamp-2 sm:line-clamp-none sm:truncate">{title}</span>
+      {note ? (
+        <span className={cn('row-note truncate', noteFromSm && 'hidden sm:block')}>{note}</span>
+      ) : null}
     </span>
   );
 }

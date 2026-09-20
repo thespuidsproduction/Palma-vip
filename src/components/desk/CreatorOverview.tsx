@@ -191,7 +191,11 @@ export function CreatorOverview({
                 {honours.map((honour) => (
                   <Row key={honour.code} className={honour.revoked ? 'opacity-60' : undefined}>
                     <Glyph icon={Trophy} size="sm" tone={honour.revoked ? 'neutral' : 'accent'} />
-                    <RowText title={honour.categoryName} note={`${honour.kind} · ${honour.year}`} />
+                    <RowText
+                      title={honour.categoryName}
+                      note={`${honour.kind} · ${honour.year}`}
+                      noteFromSm
+                    />
                     <span className="ml-auto flex shrink-0 items-center gap-2">
                       {honour.revoked ? <Tag>Revoked</Tag> : copySlot?.(honour.code)}
                       <Link

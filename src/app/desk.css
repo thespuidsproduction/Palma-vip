@@ -632,11 +632,19 @@
     transform: scaleY(1);
   }
 
+  /* Smaller on a phone, where a row has a third of the width to say the same
+     thing in. It steps back up once there is room. */
   .row-title {
     font-family: var(--font-display);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     line-height: 1.3;
     color: var(--text);
+  }
+
+  @media (min-width: 40rem) {
+    .row-title {
+      font-size: 0.875rem;
+    }
   }
 
   .row-note {
