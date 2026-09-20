@@ -1,6 +1,8 @@
 import { headers } from 'next/headers';
-import { AdminShell } from '@/components/admin/AdminShell';
-import { ADMIN_NAV, MODERATION_NAV } from '@/lib/admin-nav';
+import { VipShell } from '@/components/vip/VipShell';
+import { SignOutButton } from '@/components/vip/SignOut';
+import { CommandPalette } from '@/components/admin/CommandPalette';
+import { ADMIN_NAV, MODERATION_NAV, navFor } from '@/lib/admin-nav';
 import type { Role } from '@/lib/auth/rbac';
 
 export const dynamic = 'force-dynamic';
@@ -38,16 +40,23 @@ export default async function ModerationLayout({ children }: { children: React.R
 
   const role = session.user.role;
   const isModerator = role === 'moderator';
+  const groups = navFor(role, isModerator ? MODERATION_NAV : ADMIN_NAV);
 
   return (
-    <AdminShell
-      role={role}
-      userName={session.user.email}
-      activeHref={activeHref}
+    <VipShell
       title={isModerator ? 'Moderation' : 'Administration'}
-      nav={isModerator ? MODERATION_NAV : ADMIN_NAV}
+      eyebrow="The Creator Honours"
+      userName={session.user.email}
+      nav={groups}
+      activeHref={activeHref}
+      actions={
+        <>
+          <CommandPalette groups={groups} />
+          <SignOutButton />
+        </>
+      }
     >
       {children}
-    </AdminShell>
+    </VipShell>
   );
 }

@@ -1,5 +1,8 @@
 import { headers } from 'next/headers';
-import { AdminShell } from '@/components/admin/AdminShell';
+import { VipShell } from '@/components/vip/VipShell';
+import { SignOutButton } from '@/components/vip/SignOut';
+import { CommandPalette } from '@/components/admin/CommandPalette';
+import { navFor } from '@/lib/admin-nav';
 import { roleSurface } from '@/components/account/RoleSurface';
 import { ENTRANCES } from '@/lib/auth/entrances';
 
@@ -10,10 +13,23 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!session) return panel;
 
   const activeHref = (await headers()).get('x-palma-pathname') ?? '/admin';
+  const groups = navFor(session.user.role);
 
   return (
-    <AdminShell role={session.user.role} userName={session.user.email} activeHref={activeHref}>
+    <VipShell
+      title="Administration"
+      eyebrow="The Creator Honours"
+      userName={session.user.email}
+      nav={groups}
+      activeHref={activeHref}
+      actions={
+        <>
+          <CommandPalette groups={groups} />
+          <SignOutButton />
+        </>
+      }
+    >
       {children}
-    </AdminShell>
+    </VipShell>
   );
 }

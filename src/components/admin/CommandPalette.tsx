@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { searchAdmin } from '@/server/actions/search';
 import type { SearchHit } from '@/server/data/people';
 import type { AdminGroup } from '@/lib/admin-nav';
+import { Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -150,10 +151,11 @@ export function CommandPalette({ groups }: { groups: AdminGroup[] }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="border-ivory/20 text-ivory/50 hover:border-ivory/40 hover:text-ivory hidden items-center gap-3 border px-3 py-1.5 text-xs transition-colors sm:flex"
+        className="vip-glass-quiet vip-lift hidden items-center gap-3 rounded-full px-4 py-2 text-xs text-[color:var(--glass-ink-soft)] sm:flex"
       >
+        <Search className="size-3.5" strokeWidth={2} />
         <span>Search PALMA</span>
-        <kbd className="border-ivory/20 rounded-[2px] border px-1.5 py-0.5 font-sans text-[0.625rem]">
+        <kbd className="rounded-md px-1.5 py-0.5 font-sans text-[0.625rem] ring-1 ring-[color:var(--glass-rim-soft)] ring-inset">
           ⌘K
         </kbd>
       </button>
@@ -171,20 +173,22 @@ export function CommandPalette({ groups }: { groups: AdminGroup[] }) {
               type="button"
               aria-label="Close search"
               onClick={() => setOpen(false)}
-              className="bg-ink/55 absolute inset-0 backdrop-blur-[2px]"
+              className="absolute inset-0 bg-[color:var(--aurora-ground)]/55 backdrop-blur-md"
             />
 
             <motion.div
               role="dialog"
               aria-modal="true"
               aria-label="Search PALMA"
-              className="border-stone-deep bg-ivory relative w-full max-w-2xl border shadow-2xl"
+              className="vip-glass vip-glass-strong vip-rim-gold relative w-full max-w-2xl"
               {...motionProps}
             >
-              <div className="border-stone-deep flex items-center gap-3 border-b px-5">
-                <span aria-hidden="true" className="text-taupe text-sm">
-                  ⌘
-                </span>
+              <div className="flex items-center gap-3 border-b border-[color:var(--glass-rim-soft)] px-5">
+                <Search
+                  aria-hidden="true"
+                  className="size-4 shrink-0 text-[color:var(--glass-ink-quiet)]"
+                  strokeWidth={2}
+                />
                 <input
                   ref={inputRef}
                   value={query}
@@ -192,16 +196,14 @@ export function CommandPalette({ groups }: { groups: AdminGroup[] }) {
                   onKeyDown={onInputKeyDown}
                   placeholder="A name, an email, a reference, a verification code…"
                   aria-label="Search PALMA"
-                  className="text-ink placeholder:text-taupe h-14 min-w-0 flex-1 bg-transparent text-[0.9375rem] focus:outline-none"
+                  className="h-14 min-w-0 flex-1 bg-transparent text-[0.9375rem] text-[color:var(--glass-ink)] placeholder:text-[color:var(--glass-ink-quiet)] focus:outline-none"
                 />
-                {pending ? (
-                  <span className="palma-label text-taupe motion-safe:animate-pulse">…</span>
-                ) : null}
+                {pending ? <span className="vip-label motion-safe:animate-pulse">…</span> : null}
               </div>
 
               <ul ref={listRef} className="max-h-[52vh] overflow-y-auto py-2">
                 {entries.length === 0 ? (
-                  <li className="text-taupe px-5 py-8 text-center text-sm">
+                  <li className="px-5 py-8 text-center text-sm text-[color:var(--glass-ink-quiet)]">
                     {query.trim().length < 2
                       ? 'Type at least two characters.'
                       : `Nothing matches “${query.trim()}”.`}
@@ -216,16 +218,18 @@ export function CommandPalette({ groups }: { groups: AdminGroup[] }) {
                         onClick={() => go(entry.href)}
                         className={cn(
                           'flex w-full items-baseline gap-4 px-5 py-2.5 text-left transition-colors',
-                          index === active ? 'bg-stone/50' : 'hover:bg-stone/30',
+                          index === active
+                            ? 'bg-[color:var(--glass-fill-strong)]'
+                            : 'hover:bg-[color:var(--glass-fill)]',
                         )}
                       >
-                        <span className="palma-label text-taupe w-24 shrink-0 truncate">
+                        <span className="vip-label w-24 shrink-0 truncate text-[10px]">
                           {entry.kind}
                         </span>
-                        <span className="font-display min-w-0 flex-1 truncate text-[0.9375rem]">
+                        <span className="font-display min-w-0 flex-1 truncate text-[0.9375rem] text-[color:var(--glass-ink)]">
                           {entry.title}
                         </span>
-                        <span className="text-taupe-deep hidden max-w-[45%] min-w-0 truncate text-xs sm:block">
+                        <span className="hidden max-w-[45%] min-w-0 truncate text-xs text-[color:var(--glass-ink-quiet)] sm:block">
                           {entry.detail}
                         </span>
                       </button>
@@ -234,7 +238,7 @@ export function CommandPalette({ groups }: { groups: AdminGroup[] }) {
                 )}
               </ul>
 
-              <div className="border-stone-deep text-taupe flex flex-wrap items-center gap-x-5 gap-y-1 border-t px-5 py-2.5 text-[0.6875rem]">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-[color:var(--glass-rim-soft)] px-5 py-2.5 text-[0.6875rem] text-[color:var(--glass-ink-quiet)]">
                 <span>↑↓ to move</span>
                 <span>↵ to open</span>
                 <span>esc to close</span>
