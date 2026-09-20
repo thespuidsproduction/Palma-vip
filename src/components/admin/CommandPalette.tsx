@@ -161,6 +161,7 @@ export function CommandPalette({ groups }: { groups: PaletteGroup[] }) {
         onClick={() => setOpen(true)}
         className={cn(
           'hidden items-center gap-3 rounded-full border border-[color:var(--line)] px-3.5 py-2 text-xs sm:flex',
+          'pointer-coarse:min-h-11',
           'bg-[color:var(--surface-1)] text-[color:var(--text-soft)] shadow-[var(--lift-1)]',
           'transition-[transform,box-shadow] duration-400 [transition-timing-function:var(--spring)]',
           'hover:-translate-y-0.5 hover:shadow-[var(--lift-2)]',

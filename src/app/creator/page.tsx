@@ -68,7 +68,11 @@ export default async function PortalPage() {
         published={portal.isPublished}
         hasProfile={portal.hasProfile}
         copySlot={(code: string) => (
-          <CopyLink value={absoluteUrl(`/verify/${code}`)} label="Copy link" />
+          <CopyLink
+            value={absoluteUrl(`/verify/${code}`)}
+            label="Copy link"
+            className="rounded-full border-[color:var(--line)] px-2.5 py-1 text-[0.625rem] pointer-coarse:min-h-11 pointer-coarse:px-3"
+          />
         )}
       />
     </PortalShell>

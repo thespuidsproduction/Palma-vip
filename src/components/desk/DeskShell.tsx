@@ -96,7 +96,7 @@ export function DeskShell({
         <div className="relative mx-auto flex w-full max-w-[100rem] items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="shrink-0 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]"
+            className="tap shrink-0 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]"
           >
             {/* `href={null}`: a Wordmark that links itself would nest one
                 anchor inside another. */}

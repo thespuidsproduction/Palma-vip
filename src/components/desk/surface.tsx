@@ -373,6 +373,7 @@ export function Action({
       href={href}
       className={cn(
         'group inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium',
+        'pointer-coarse:min-h-11 pointer-coarse:px-5',
         'transition-[transform,background-color,box-shadow] duration-500 [transition-timing-function:var(--spring)]',
         'hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]',

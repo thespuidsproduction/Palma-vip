@@ -91,7 +91,7 @@ export function AdminOverview({
             {degraded.join(', ')}{' '}
             <Link
               href="/admin/health"
-              className="inline-flex items-center gap-0.5 font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
+              className="tap inline-flex items-center gap-0.5 font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
             >
               view system health
               <ChevronRight className="size-3.5" />

@@ -134,7 +134,7 @@ export function JudgeOverview({
               action={
                 <Link
                   href="/judge/assignments"
-                  className="inline-flex items-center gap-1 text-[0.8125rem] text-[color:var(--accent)] underline-offset-4 hover:underline"
+                  className="tap inline-flex items-center gap-1 text-[0.8125rem] text-[color:var(--accent)] underline-offset-4 hover:underline"
                 >
                   Open the workspace
                   <ChevronRight className="size-3.5" />
@@ -170,7 +170,7 @@ export function JudgeOverview({
                           <Link
                             href={`/judge/${category.nextAssignmentId}`}
                             className={cn(
-                              'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium',
+                              'tap inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.6875rem] font-medium',
                               'text-[color:var(--accent)] ring-1 ring-[color:var(--accent)]/25 ring-inset',
                               'transition-transform duration-400 [transition-timing-function:var(--spring)] hover:-translate-y-0.5',
                             )}
@@ -261,7 +261,7 @@ export function JudgeOverview({
                     {notice.href ? (
                       <Link
                         href={notice.href}
-                        className="mt-0.5 inline-flex items-center gap-1 self-start text-[0.75rem] text-[color:var(--accent)] underline-offset-4 hover:underline"
+                        className="tap mt-0.5 inline-flex items-center gap-1 self-start text-[0.75rem] text-[color:var(--accent)] underline-offset-4 hover:underline"
                       >
                         Open <ChevronRight className="size-3" />
                       </Link>

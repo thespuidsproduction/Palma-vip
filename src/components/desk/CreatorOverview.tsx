@@ -193,19 +193,10 @@ export function CreatorOverview({
                     <Glyph icon={Trophy} size="sm" tone={honour.revoked ? 'neutral' : 'accent'} />
                     <RowText title={honour.categoryName} note={`${honour.kind} · ${honour.year}`} />
                     <span className="ml-auto flex shrink-0 items-center gap-2">
-                      {honour.revoked ? (
-                        <Tag>Revoked</Tag>
-                      ) : (
-                        // The copy control is a shared component with its own
-                        // square outline; rounded here so it sits in the row
-                        // with the tags rather than against them.
-                        <span className="[&_button]:rounded-full [&_button]:border-[color:var(--line)] [&_button]:px-2.5 [&_button]:py-1 [&_button]:text-[0.625rem]">
-                          {copySlot?.(honour.code) ?? null}
-                        </span>
-                      )}
+                      {honour.revoked ? <Tag>Revoked</Tag> : copySlot?.(honour.code)}
                       <Link
                         href={honour.verifyHref}
-                        className="inline-flex items-center gap-1 text-[0.6875rem] font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
+                        className="tap inline-flex items-center gap-1 text-[0.6875rem] font-medium text-[color:var(--accent)] underline-offset-4 hover:underline"
                       >
                         <Eye className="size-3.5" />
                         View

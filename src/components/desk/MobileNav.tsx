@@ -63,6 +63,8 @@ export function MobileNav({
         data-open={open || undefined}
         className={cn(
           'relative size-9 shrink-0 rounded-full lg:hidden',
+          // Forty-four pixels for a thumb; nine for a cursor.
+          'pointer-coarse:size-11',
           'border border-[color:var(--line)] bg-[color:var(--surface-1)]',
           'transition-[background-color,transform] duration-400 [transition-timing-function:var(--spring)]',
           'active:scale-95',

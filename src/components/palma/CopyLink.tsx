@@ -9,10 +9,13 @@ export function CopyLink({
   value,
   label = 'Copy verification link',
   variant = 'outline',
+  className,
 }: {
   value: string;
   label?: string;
   variant?: 'outline' | 'quiet' | 'ghost';
+  /** So a caller can size it for the row it sits in. */
+  className?: string;
 }) {
   const [copied, setCopied] = React.useState(false);
 
@@ -33,7 +36,14 @@ export function CopyLink({
   }
 
   return (
-    <Button type="button" variant={variant} size="sm" onClick={copy} aria-live="polite">
+    <Button
+      type="button"
+      variant={variant}
+      size="sm"
+      onClick={copy}
+      aria-live="polite"
+      className={className}
+    >
       {copied ? <Check aria-hidden="true" /> : <Link2 aria-hidden="true" />}
       {copied ? 'Copied' : label}
     </Button>
