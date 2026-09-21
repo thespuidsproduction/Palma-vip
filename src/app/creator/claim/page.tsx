@@ -70,8 +70,8 @@ export default async function ClaimPage({
           {openClaim ? (
             <Notice tone="ceremonial" title={`Claim ${openClaim.reference} is open`}>
               You have a claim open on {openClaim.creatorDisplayName}, submitted{' '}
-              {openClaim.createdAt.slice(0, 10)}. PALMA reviews claims by hand and
-              will write to you.
+              {openClaim.createdAt.slice(0, 10)}. PALMA reviews claims by hand and will write to
+              you.
               {openClaim.informationRequestedNote ? (
                 <span className="mt-3 block text-sm">
                   <strong>PALMA has asked for more:</strong> {openClaim.informationRequestedNote}
