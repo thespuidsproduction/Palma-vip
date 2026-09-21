@@ -9,7 +9,7 @@ import { getCreatorPortal } from '@/server/data/portal';
 import { formatShortDate } from '@/lib/format';
 import { titleCase } from '@/lib/utils';
 import { CREATOR_NAV } from '@/lib/creator-nav';
-import { ShieldCheck, BadgeCheck, Lock, FileClock } from 'lucide-react';
+import { ShieldCheck, Lock, FileClock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,17 +48,7 @@ export default async function CreatorVerificationPage() {
               {titleCase(status)}
             </Tag>
           }
-        >
-          {portal?.verification.verifiedAt ? (
-            <Tag>
-              <BadgeCheck className="size-3.5" />
-              Verified {formatShortDate(portal.verification.verifiedAt)}
-              {portal.verification.expiresAt
-                ? `, renews ${formatShortDate(portal.verification.expiresAt)}`
-                : ''}
-            </Tag>
-          ) : null}
-        </PageHead>
+        />
 
         <div className="grid gap-5 xl:grid-cols-12">
           <Section
