@@ -39,10 +39,13 @@ export function DeskChoreography({ children }: { children: React.ReactNode }) {
       const above = gsap.utils.toArray<HTMLElement>('[data-lift="hero"]');
       const figures = gsap.utils.toArray<HTMLElement>('[data-lift="figure"]');
 
-      gsap
-        .timeline({ defaults: { ease: 'power3.out' } })
-        .from(above, { y: 18, opacity: 0, duration: 0.7, stagger: 0.06 })
-        .from(figures, { y: 14, opacity: 0, duration: 0.55, stagger: 0.045 }, '-=0.42');
+      // Guarded: GSAP warns on an empty target list, and a desk that happens
+      // to have no figures is a normal page, not a mistake.
+      const opening = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      if (above.length) opening.from(above, { y: 18, opacity: 0, duration: 0.7, stagger: 0.06 });
+      if (figures.length) {
+        opening.from(figures, { y: 14, opacity: 0, duration: 0.55, stagger: 0.045 }, '-=0.42');
+      }
 
       // Sections below the fold arrive as they are reached. `once` matters: a
       // desk is scrolled up and down all day and re-animating on every pass
@@ -60,7 +63,9 @@ export function DeskChoreography({ children }: { children: React.ReactNode }) {
       // Rows inside a list cascade, so a long list reads as filling rather than
       // as appearing.
       gsap.utils.toArray<HTMLElement>('[data-lift="list"]').forEach((list) => {
-        gsap.from(list.querySelectorAll(':scope > *'), {
+        const rows = list.querySelectorAll(':scope > *');
+        if (!rows.length) return;
+        gsap.from(rows, {
           opacity: 0,
           x: -10,
           duration: 0.45,
